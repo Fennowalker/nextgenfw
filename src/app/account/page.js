@@ -472,6 +472,25 @@ export default function AccountPage() {
                 </div>
               </div>
 
+              {/* Upload Rx Slip Document */}
+              <div className={styles.formGroup} style={{ marginTop: '0.5rem' }}>
+                <label>Upload Optometrist Prescription Slip / Doctor Note</label>
+                <div style={{ position: 'relative', border: '2px dashed var(--border-light)', borderRadius: '12px', padding: '1rem', textAlign: 'center', cursor: 'pointer', background: 'var(--bg-primary)' }}>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}
+                    onChange={e => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setNewRx(prev => ({ ...prev, rxFile: file.name }));
+                      }
+                    }}
+                  />
+                  <span>📄 {newRx.rxFile ? `Selected: ${newRx.rxFile}` : 'Click or drop Doctor Rx Slip (JPG, PNG, PDF)'}</span>
+                </div>
+              </div>
+
               <div className={styles.modalActions}>
                 <button type="button" className="btn-secondary" onClick={() => setShowAddRxModal(false)}>Cancel</button>
                 <button type="submit" className="btn-primary">Save Prescription</button>

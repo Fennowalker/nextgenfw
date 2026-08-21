@@ -163,19 +163,23 @@ function StoreCustomizerView() {
     setTimeout(() => setPublishNotify(false), 3000);
   }
 
-  function handleLogoFileUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const fakeUrl = URL.createObjectURL(file);
-      setLogoUrl(fakeUrl);
-    }
+  function handleLogoFileUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setLogoUrl(ev.target.result);
+    reader.readAsDataURL(file);
   }
 
-  function handleFaviconUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
-      setFaviconEmoji('🖼️ Logo File Uploaded');
-    }
+  function handleFaviconUpload(file) {
+    if (!file) return;
+    setFaviconEmoji('🖼️ Logo File Uploaded');
+  }
+
+  function handleBannerUpload(file, setter) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setter(ev.target.result);
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -241,11 +245,21 @@ function StoreCustomizerView() {
               </div>
 
               {/* Upload Dropzone */}
-              <div className={styles.uploadDropzone}>
+              <div
+                className={styles.uploadDropzone}
+                style={{ position: 'relative', cursor: 'pointer' }}
+              >
+                <input
+                  type="file"
+                  accept="image/*,.svg"
+                  onChange={e => handleLogoFileUpload(e.target.files[0])}
+                  className={styles.fileInputOverlay}
+                />
                 <span className={styles.dropzoneIcon}>📁</span>
                 <p><strong>Upload Vector Logo (.SVG, .PNG, .WEBP)</strong></p>
-                <span className={styles.dropzoneSub}>Drag & drop or browse logo image file</span>
-                <input type="file" accept="image/*,.svg" onChange={handleLogoFileUpload} className={styles.fileInputHidden} />
+                <span className={styles.dropzoneSub}>
+                  {logoUrl ? '✅ Logo Loaded (Click to replace)' : 'Drag & drop or browse logo image file'}
+                </span>
               </div>
 
               {/* Live Logo Preview Box */}
@@ -270,10 +284,15 @@ function StoreCustomizerView() {
                 <input type="text" value={faviconEmoji} onChange={e => setFaviconEmoji(e.target.value)} className={styles.adminInput} />
               </div>
 
-              <div className={styles.uploadDropzone} style={{ marginTop: '1rem' }}>
+              <div className={styles.uploadDropzone} style={{ marginTop: '1rem', position: 'relative', cursor: 'pointer' }}>
+                <input
+                  type="file"
+                  accept="image/x-icon,image/png,image/svg+xml"
+                  onChange={e => handleFaviconUpload(e.target.files[0])}
+                  className={styles.fileInputOverlay}
+                />
                 <span className={styles.dropzoneIcon}>🌐</span>
                 <p><strong>Upload .ICO / .PNG Favicon (32x32)</strong></p>
-                <input type="file" accept="image/x-icon,image/png" onChange={handleFaviconUpload} className={styles.fileInputHidden} />
               </div>
 
               <div className={styles.faviconPreviewRow}>
@@ -333,6 +352,19 @@ function StoreCustomizerView() {
                   <option value="/prada-frames.png">Preset 2: Prada Wire Frame Spotlight</option>
                   <option value="/persol-sunglasses.png">Preset 3: Persol Calligrapher Edition</option>
                 </select>
+              </div>
+
+              {/* Banner Upload */}
+              <div className={styles.uploadDropzone} style={{ marginTop: '0.75rem', marginBottom: '1rem', position: 'relative', cursor: 'pointer' }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => handleBannerUpload(e.target.files[0], setHeroBgPreset)}
+                  className={styles.fileInputOverlay}
+                />
+                <span className={styles.dropzoneIcon}>🖼️</span>
+                <p><strong>Upload Custom Hero Background Image</strong></p>
+                <span className={styles.dropzoneSub}>Click or drop image to replace main hero banner</span>
               </div>
 
               <div className={styles.bannerPreviewBox} style={{ backgroundImage: `url(${heroBgPreset})` }}>
@@ -796,6 +828,7 @@ function ProductConfiguratorModal({ product, onClose, onSave }) {
       status,
       stock: totalStock,
       variants: generatedVariants.length || product?.variants || 4,
+      img: productImage || product?.img || '/prada-frames.png',
     });
   }
 
@@ -816,39 +849,41 @@ function ProductConfiguratorModal({ product, onClose, onSave }) {
               <label className={styles.imgUploadLabel}>Product Image</label>
               <div
                 className={`${styles.imgDropZone} ${imgDragOver ? styles.imgDropZoneActive : ''} ${productImage ? styles.imgDropZoneHasFile : ''}`}
+                style={{ position: 'relative', cursor: 'pointer' }}
                 onDragOver={e => { e.preventDefault(); setImgDragOver(true); }}
                 onDragLeave={() => setImgDragOver(false)}
                 onDrop={e => { e.preventDefault(); setImgDragOver(false); handleImageFile(e.dataTransfer.files[0]); }}
               >
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => handleImageFile(e.target.files[0])}
+                  className={styles.fileInputOverlay}
+                />
                 {productImage ? (
-                  <div className={styles.imgPreviewWrap}>
+                  <div className={styles.imgPreviewWrap} style={{ zIndex: 2, pointerEvents: 'none' }}>
                     <img src={productImage} alt="Preview" className={styles.imgPreviewThumb} />
                     <div className={styles.imgPreviewInfo}>
                       <span className={styles.imgPreviewName}>✅ {imgFileName || 'Current image'}</span>
-                      <span className={styles.imgPreviewSize}>Click below to replace</span>
+                      <span className={styles.imgPreviewSize}>Click anywhere to replace</span>
                     </div>
                     <button
                       type="button"
                       className={styles.imgRemoveBtn}
-                      onClick={() => { setProductImage(null); setImgFileName(''); }}
+                      style={{ pointerEvents: 'auto' }}
+                      onClick={e => { e.stopPropagation(); setProductImage(null); setImgFileName(''); }}
                       title="Remove image"
                     >✕</button>
                   </div>
                 ) : (
-                  <div className={styles.imgDropContent}>
+                  <div className={styles.imgDropContent} style={{ pointerEvents: 'none' }}>
                     <span className={styles.imgDropIcon}>🖼️</span>
                     <p className={styles.imgDropTitle}>Drag &amp; drop product image here</p>
                     <p className={styles.imgDropSub}>Supports PNG, JPG, WebP, SVG up to 10MB</p>
                   </div>
                 )}
-                <label className={styles.imgBrowseBtn}>
+                <label className={styles.imgBrowseBtn} style={{ pointerEvents: 'none', zIndex: 2 }}>
                   📁 {productImage ? 'Replace Image' : 'Browse Files'}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={e => handleImageFile(e.target.files[0])}
-                  />
                 </label>
               </div>
             </div>
