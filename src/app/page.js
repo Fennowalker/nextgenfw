@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -159,18 +159,46 @@ export default function Home() {
   const [sort, setSort] = useState('featured');
   const [search, setSearch] = useState('');
 
+  /* Sync cart with localStorage */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fenno_cart');
+      if (saved) setCart(JSON.parse(saved));
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (cart.length > 0) {
+        localStorage.setItem('fenno_cart', JSON.stringify(cart));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [cart]);
+
   const cartCount = cart.reduce((a, i) => a + i.qty, 0);
 
   function addToCart(product) {
     setCart(prev => {
       const existing = prev.find(i => i.id === product.id);
-      if (existing) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
-      return [...prev, { ...product, qty: 1 }];
+      const next = existing
+        ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i)
+        : [...prev, { ...product, qty: 1 }];
+      try { localStorage.setItem('fenno_cart', JSON.stringify(next)); } catch(e){}
+      return next;
     });
+    setCartOpen(true);
   }
 
   function removeFromCart(id) {
-    setCart(prev => prev.filter(i => i.id !== id));
+    setCart(prev => {
+      const next = prev.filter(i => i.id !== id);
+      try { localStorage.setItem('fenno_cart', JSON.stringify(next)); } catch(e){}
+      return next;
+    });
   }
 
   function toggleFilter(group, value) {

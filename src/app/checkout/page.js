@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './checkout.module.css';
@@ -502,6 +502,30 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({});
   const [couponVal, setCouponVal] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
+
+  /* Load user's actual added cart items from localStorage */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fenno_cart');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCart(parsed);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  /* Save cart state when items change */
+  useEffect(() => {
+    try {
+      localStorage.setItem('fenno_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [cart]);
 
   function applyCoupon() {
     if (couponVal === 'EYEWEAR10') setCouponApplied(true);
