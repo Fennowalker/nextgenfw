@@ -927,16 +927,36 @@ function ProductConfiguratorModal({ product, onClose, onSave }) {
       ? generatedVariants.reduce((a, v) => a + Number(v.stock), 0)
       : product?.stock || 45;
 
+    const rawPrice = Number(basePrice) || 250;
+    const finalPrice = rawPrice > 1000 ? rawPrice : rawPrice * 100;
+    const colorHexMap = {
+      Gold: '#d4af37',
+      Silver: '#c0c0c0',
+      Gunmetal: '#374151',
+      'Matte Black': '#111827',
+      Tortoise: '#78350f',
+      Havana: '#92400e',
+      Clear: '#e2e8f0',
+    };
+
     onSave({
       id: product?.id || Date.now(),
       name,
       brand,
       type,
-      basePrice: Number(basePrice),
+      basePrice: rawPrice,
+      price: finalPrice,
       status,
       stock: totalStock,
       variants: generatedVariants.length || product?.variants || 4,
       img: productImage || product?.img || '/prada-frames.png',
+      rating: product?.rating || 4.9,
+      reviews: product?.reviews || 18,
+      colors: selectedColors.length ? selectedColors.map(c => colorHexMap[c] || '#111827') : ['#111827', '#d4af37'],
+      tag: type === 'Sunglass' ? 'Polarized' : type === 'Contact Lens' ? 'Monthly' : 'Titanium',
+      category: type === 'Sunglass' ? 'Sunglasses' : type === 'Contact Lens' ? 'Contact Lenses' : 'Eyeglasses',
+      gender: 'Unisex',
+      material: material || 'Titanium Metal',
     });
   }
 
@@ -1451,6 +1471,33 @@ export default function AdminPage() {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
+  /* Load stored product catalog on mount */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fenno_products_catalog');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setProducts(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load products from storage:', e);
+    }
+  }, []);
+
+  /* Save product updates and notify storefront */
+  useEffect(() => {
+    try {
+      if (products && products.length > 0) {
+        localStorage.setItem('fenno_products_catalog', JSON.stringify(products));
+        window.dispatchEvent(new Event('fenno_products_updated'));
+      }
+    } catch (e) {
+      console.error('Failed to save products to storage:', e);
+    }
+  }, [products]);
+
   const pageTitle = NAV_ITEMS.find(n => n.key === activeNav)?.label || 'Dashboard';
 
   /* While loading auth or redirecting, show nothing */
@@ -1476,15 +1523,27 @@ export default function AdminPage() {
   }
 
   function handleDeleteProduct(id) {
-    setProducts(prev => prev.filter(p => p.id !== id));
+    setProducts(prev => {
+      const next = prev.filter(p => p.id !== id);
+      try {
+        localStorage.setItem('fenno_products_catalog', JSON.stringify(next));
+        window.dispatchEvent(new Event('fenno_products_updated'));
+      } catch (e) {}
+      return next;
+    });
   }
 
   function handleSaveProduct(savedProduct) {
-    if (editingProduct) {
-      setProducts(prev => prev.map(p => p.id === savedProduct.id ? savedProduct : p));
-    } else {
-      setProducts(prev => [savedProduct, ...prev]);
-    }
+    setProducts(prev => {
+      const next = editingProduct
+        ? prev.map(p => p.id === savedProduct.id ? savedProduct : p)
+        : [savedProduct, ...prev];
+      try {
+        localStorage.setItem('fenno_products_catalog', JSON.stringify(next));
+        window.dispatchEvent(new Event('fenno_products_updated'));
+      } catch (e) {}
+      return next;
+    });
     setShowConfigModal(false);
     setEditingProduct(null);
   }

@@ -159,6 +159,7 @@ export default function Home() {
   const [sort, setSort] = useState('featured');
   const [search, setSearch] = useState('');
   const [customTheme, setCustomTheme] = useState(null);
+  const [catalogProducts, setCatalogProducts] = useState(PRODUCTS);
 
   /* Load dynamic customizer theme and listen for live updates */
   useEffect(() => {
@@ -176,6 +177,42 @@ export default function Home() {
     return () => {
       window.removeEventListener('storage', loadTheme);
       window.removeEventListener('fenno_theme_updated', loadTheme);
+    };
+  }, []);
+
+  /* Sync products from admin/backend */
+  useEffect(() => {
+    function syncProducts() {
+      try {
+        const saved = localStorage.getItem('fenno_products_catalog');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const mapped = parsed.map(p => ({
+              ...p,
+              price: p.price || (p.basePrice && p.basePrice > 1000 ? p.basePrice : (p.basePrice || 250) * 100),
+              category: p.category || (p.type === 'Sunglass' ? 'Sunglasses' : p.type === 'Contact Lens' ? 'Contact Lenses' : 'Eyeglasses'),
+              gender: p.gender || 'Unisex',
+              material: p.material || 'Acetate',
+              rating: p.rating || 4.8,
+              reviews: p.reviews || 24,
+              tag: p.tag || (p.type === 'Sunglass' ? 'Polarized' : 'Titanium'),
+              colors: Array.isArray(p.colors) && p.colors.length ? p.colors : ['#111827', '#d4af37'],
+              img: p.img || '/prada-frames.png',
+            }));
+            setCatalogProducts(mapped);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    syncProducts();
+    window.addEventListener('storage', syncProducts);
+    window.addEventListener('fenno_products_updated', syncProducts);
+    return () => {
+      window.removeEventListener('storage', syncProducts);
+      window.removeEventListener('fenno_products_updated', syncProducts);
     };
   }, []);
 
@@ -229,7 +266,7 @@ export default function Home() {
   }
 
   const filtered = useMemo(() => {
-    let list = PRODUCTS.filter(p => {
+    let list = catalogProducts.filter(p => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.brand.toLowerCase().includes(search.toLowerCase())) return false;
       if (filters.category.length && !filters.category.includes(p.category)) return false;
       if (filters.gender.length && !filters.gender.includes(p.gender)) return false;
@@ -240,7 +277,7 @@ export default function Home() {
     if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price);
     if (sort === 'rating') list = [...list].sort((a, b) => b.rating - a.rating);
     return list;
-  }, [search, filters, sort]);
+  }, [search, filters, sort, catalogProducts]);
 
   return (
     <div className={styles.wrapper}>

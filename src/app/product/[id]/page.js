@@ -554,6 +554,28 @@ export default function ProductPage({ params }) {
 
   function handleAddToCart() {
     setAddedToCart(true);
+    try {
+      const saved = localStorage.getItem('fenno_cart');
+      const currentCart = saved ? JSON.parse(saved) : [];
+      const itemPrice = customLensPackage ? currentPrice + customLensPackage.price : currentPrice;
+      const cartItem = {
+        id: product.id,
+        name: product.name,
+        price: itemPrice,
+        qty: qty,
+        img: product.img,
+        color: selectedColor,
+        size: selectedSize,
+      };
+      const existing = currentCart.find(i => i.id === product.id && i.color === selectedColor && i.size === selectedSize);
+      const nextCart = existing
+        ? currentCart.map(i => i === existing ? { ...i, qty: i.qty + qty } : i)
+        : [...currentCart, cartItem];
+      localStorage.setItem('fenno_cart', JSON.stringify(nextCart));
+      window.dispatchEvent(new Event('storage'));
+    } catch (e) {
+      console.error('Failed to sync product to cart:', e);
+    }
     setTimeout(() => setAddedToCart(false), 2500);
   }
 
