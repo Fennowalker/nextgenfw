@@ -1,0 +1,122 @@
+/* ─── CALCULATOR PAGE STYLES ───────────────────────────── */
+.calcPage {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  font-family: var(--font-body);
+  padding-bottom: 4rem;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 0;
+}
+.headerInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.logo strong { color: var(--accent-primary); }
+
+.navRight { display: flex; align-items: center; gap: 1rem; }
+.navLink { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+.navLink:hover { color: var(--accent-primary); }
+.navAdmin { background: rgba(99,102,241,0.12); color: #6366f1; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.85rem; border-radius: 999px; text-decoration: none; }
+
+/* HERO BANNER */
+.heroBanner {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  padding: 3rem 0 3.5rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+.heroContent { max-width: 720px; margin: 0 auto; }
+.badge { background: rgba(59,130,246,0.15); color: #60a5fa; font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px; border: 1px solid rgba(59,130,246,0.25); display: inline-block; margin-bottom: 0.75rem; }
+.heroTitle { font-size: 2.2rem; font-weight: 800; font-family: var(--font-heading); margin: 0 0 0.5rem; }
+.heroSub { font-size: 0.95rem; color: rgba(255,255,255,0.65); margin: 0; line-height: 1.6; }
+
+/* TOOLS GRID */
+.toolsGrid { display: flex; flex-direction: column; gap: 1.75rem; }
+
+.toolCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.75rem;
+}
+
+.toolHeader { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.toolIcon { font-size: 2rem; background: var(--bg-primary); width: 52px; height: 52px; border-radius: 12px; border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toolTitle { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem; font-family: var(--font-heading); color: var(--text-primary); }
+.toolSub { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+
+.inputsRow3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+.inputsRow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.inputsRow1 { max-width: 320px; margin-bottom: 1.25rem; }
+
+.fieldGroup { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+
+.calcInput {
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.calcInput:focus { border-color: var(--accent-primary); }
+
+.resultBox {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.resultLabel { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-primary); font-weight: 700; }
+
+.rxFormulaBadge { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.rxFormulaBadge code {
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  color: var(--accent-primary);
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+}
+
+.diffPill { background: #dcfce7; color: #15803d; font-size: 0.82rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 999px; }
+
+.formulaNote { font-size: 0.78rem; color: var(--text-secondary); margin: 0; font-style: italic; }
+
+.calcFooterActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .inputsRow3, .inputsRow2 { grid-template-columns: 1fr; }
+}
