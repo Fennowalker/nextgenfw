@@ -207,10 +207,10 @@ export default function Home() {
           {/* Logo */}
           <Link href="/" className={styles.logo}>
             <img
-              src="/fenno-walker-logo.png"
-              onError={e => { e.target.onerror = null; e.target.src = '/fenno-walker-logo.svg'; }}
-              alt="Fenno Walker Studio"
-              height="36"
+              src="/fenno-walker-logo.svg"
+              alt="Fenno Walker"
+              height="28"
+              style={{ maxWidth: '200px', objectFit: 'contain' }}
               className={styles.logoImg}
             />
           </Link>
