@@ -209,8 +209,8 @@ export default function Home() {
             <img
               src="/fenno-walker-logo.svg"
               alt="Fenno Walker"
-              height="24"
-              style={{ maxWidth: '170px', objectFit: 'contain' }}
+              height="32"
+              style={{ maxWidth: '250px', objectFit: 'contain' }}
               className={styles.logoImg}
             />
           </Link>
