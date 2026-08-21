@@ -158,6 +158,26 @@ export default function Home() {
   const [filters, setFilters] = useState({ category: [], gender: [], material: [] });
   const [sort, setSort] = useState('featured');
   const [search, setSearch] = useState('');
+  const [customTheme, setCustomTheme] = useState(null);
+
+  /* Load dynamic customizer theme and listen for live updates */
+  useEffect(() => {
+    function loadTheme() {
+      try {
+        const saved = localStorage.getItem('fenno_customizer_theme');
+        if (saved) setCustomTheme(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    loadTheme();
+    window.addEventListener('storage', loadTheme);
+    window.addEventListener('fenno_theme_updated', loadTheme);
+    return () => {
+      window.removeEventListener('storage', loadTheme);
+      window.removeEventListener('fenno_theme_updated', loadTheme);
+    };
+  }, []);
 
   /* Sync cart with localStorage */
   useEffect(() => {
@@ -226,7 +246,7 @@ export default function Home() {
     <div className={styles.wrapper}>
       {/* ── ANNOUNCEMENT BAR ── */}
       <div className={styles.announcementBar}>
-        <span>🚴 60-min delivery available in Noida &amp; Greater Noida. Order before 8 PM.</span>
+        <span>{customTheme?.announcementText || '🚴 60-min delivery available in Noida & Greater Noida. Order before 8 PM.'}</span>
       </div>
 
       {/* ── HEADER ── */}
@@ -235,9 +255,9 @@ export default function Home() {
           {/* Logo */}
           <Link href="/" className={styles.logo}>
             <img
-              src="/fenno-walker-logo.svg"
+              src={customTheme?.logoUrl || "/fenno-walker-logo.svg"}
               alt="Fenno Walker"
-              height="32"
+              height={customTheme?.logoHeight || "32"}
               style={{ maxWidth: '250px', objectFit: 'contain' }}
               className={styles.logoImg}
             />
@@ -293,10 +313,10 @@ export default function Home() {
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroText}>
             <span className={styles.heroBadge}>✨ New Summer Collection 2026</span>
-            <h2>See the World Clearly.<br/><span className={styles.heroAccent}>Look Amazing</span> Doing It.</h2>
-            <p>Enterprise-grade optical retail experience. Discover our exclusive collection crafted for your unique style — precision lenses meets unparalleled design.</p>
+            <h2>{customTheme?.heroTitle || (<>See the World Clearly.<br/><span className={styles.heroAccent}>Look Amazing</span> Doing It.</>)}</h2>
+            <p>{customTheme?.heroSubtitle || 'Enterprise-grade optical retail experience. Discover our exclusive collection crafted for your unique style — precision lenses meets unparalleled design.'}</p>
             <div className={styles.heroButtons}>
-              <a href="#catalog"><button className="btn-primary hover-scale">Shop Collection →</button></a>
+              <a href="#catalog"><button className="btn-primary hover-scale">{customTheme?.heroCtaText || 'Shop Collection →'}</button></a>
               <button className={`btn-secondary hover-scale`}>Book Eye Exam</button>
             </div>
             <div className={styles.heroStats}>
@@ -308,12 +328,12 @@ export default function Home() {
           <div className={styles.heroImage}>
             <div className={styles.heroBubble1}></div>
             <div className={styles.heroBubble2}></div>
-            <Image
-              src="/hero-glasses.png"
+            <img
+              src={customTheme?.heroBgPreset || "/hero-glasses.png"}
               alt="Premium Eyewear Display"
               width={600} height={500}
               className={`${styles.heroImg}`}
-              priority
+              style={{ objectFit: 'contain' }}
             />
           </div>
         </div>

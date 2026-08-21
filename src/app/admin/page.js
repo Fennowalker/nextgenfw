@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './admin.module.css';
@@ -130,20 +130,20 @@ function StoreCustomizerView() {
   const [activeTab, setActiveTab] = useState('branding');
 
   // Branding state
-  const [storeName, setStoreName] = useState('Next-Gen Eyewear');
+  const [storeName, setStoreName] = useState('Fenno Walker');
   const [logoIcon, setLogoIcon] = useState('👓');
-  const [logoUrl, setLogoUrl] = useState('/prada-frames.png');
-  const [logoHeight, setLogoHeight] = useState(42);
+  const [logoUrl, setLogoUrl] = useState('/fenno-walker-logo.svg');
+  const [logoHeight, setLogoHeight] = useState(32);
   const [faviconEmoji, setFaviconEmoji] = useState('🕶️');
 
   // Text & Content state
-  const [announcementText, setAnnouncementText] = useState('🔥 Summer Sale: Up to 20% OFF all Titanium Frames with code EYEWEAR10');
-  const [heroTitle, setHeroTitle] = useState('Precision Optical Retail Engineered for Vision');
-  const [heroSubtitle, setHeroSubtitle] = useState('Aerospace-grade titanium frames, digital blue-cut filters & custom optical lens glazing.');
-  const [heroCtaText, setHeroCtaText] = useState('Explore Catalog →');
+  const [announcementText, setAnnouncementText] = useState('🚴 60-min delivery available in Noida & Greater Noida. Order before 8 PM.');
+  const [heroTitle, setHeroTitle] = useState('See the World Clearly. Look Amazing Doing It.');
+  const [heroSubtitle, setHeroSubtitle] = useState('Enterprise-grade optical retail experience. Discover our exclusive collection crafted for your unique style — precision lenses meets unparalleled design.');
+  const [heroCtaText, setHeroCtaText] = useState('Shop Collection →');
 
   // Banner state
-  const [heroBgPreset, setHeroBgPreset] = useState('/premium_glasses_display.png');
+  const [heroBgPreset, setHeroBgPreset] = useState('/hero-glasses.png');
   const [promo1Title, setPromo1Title] = useState('Titanium Eyeglasses Collection');
   const [promo1Sub, setPromo1Sub] = useState('Ultra-lightweight 12g frames with anti-reflective lenses');
   const [promo1Img, setPromo1Img] = useState('/prada-frames.png');
@@ -158,27 +158,95 @@ function StoreCustomizerView() {
 
   const [publishNotify, setPublishNotify] = useState(false);
 
+  const logoFileRef = useRef(null);
+  const faviconFileRef = useRef(null);
+  const bannerFileRef = useRef(null);
+
+  /* Load stored customizer settings on mount */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fenno_customizer_theme');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.storeName) setStoreName(data.storeName);
+        if (data.logoIcon) setLogoIcon(data.logoIcon);
+        if (data.logoUrl) setLogoUrl(data.logoUrl);
+        if (data.logoHeight) setLogoHeight(data.logoHeight);
+        if (data.faviconEmoji) setFaviconEmoji(data.faviconEmoji);
+        if (data.announcementText) setAnnouncementText(data.announcementText);
+        if (data.heroTitle) setHeroTitle(data.heroTitle);
+        if (data.heroSubtitle) setHeroSubtitle(data.heroSubtitle);
+        if (data.heroCtaText) setHeroCtaText(data.heroCtaText);
+        if (data.heroBgPreset) setHeroBgPreset(data.heroBgPreset);
+        if (data.promo1Title) setPromo1Title(data.promo1Title);
+        if (data.promo1Sub) setPromo1Sub(data.promo1Sub);
+        if (data.promo1Img) setPromo1Img(data.promo1Img);
+        if (data.promo2Title) setPromo2Title(data.promo2Title);
+        if (data.promo2Sub) setPromo2Sub(data.promo2Sub);
+        if (data.promo2Img) setPromo2Img(data.promo2Img);
+        if (data.primaryColor) setPrimaryColor(data.primaryColor);
+        if (data.accentColor) setAccentColor(data.accentColor);
+      }
+    } catch (e) {
+      console.error('Failed to load customizer theme:', e);
+    }
+  }, []);
+
   function handlePublishTheme() {
+    const config = {
+      storeName,
+      logoIcon,
+      logoUrl,
+      logoHeight,
+      faviconEmoji,
+      announcementText,
+      heroTitle,
+      heroSubtitle,
+      heroCtaText,
+      heroBgPreset,
+      promo1Title,
+      promo1Sub,
+      promo1Img,
+      promo2Title,
+      promo2Sub,
+      promo2Img,
+      primaryColor,
+      accentColor,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem('fenno_customizer_theme', JSON.stringify(config));
+      window.dispatchEvent(new Event('fenno_theme_updated'));
+    } catch (e) {
+      console.error('Failed to save customizer theme:', e);
+    }
     setPublishNotify(true);
-    setTimeout(() => setPublishNotify(false), 3000);
+    setTimeout(() => setPublishNotify(false), 3500);
   }
 
   function handleLogoFileUpload(file) {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setLogoUrl(ev.target.result);
+    reader.onload = (ev) => {
+      setLogoUrl(ev.target.result);
+      if (logoFileRef.current) logoFileRef.current.value = '';
+    };
     reader.readAsDataURL(file);
   }
 
   function handleFaviconUpload(file) {
     if (!file) return;
-    setFaviconEmoji('🖼️ Logo File Uploaded');
+    setFaviconEmoji('🖼️ Custom Favicon');
+    if (faviconFileRef.current) faviconFileRef.current.value = '';
   }
 
   function handleBannerUpload(file, setter) {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setter(ev.target.result);
+    reader.onload = (ev) => {
+      setter(ev.target.result);
+      if (bannerFileRef.current) bannerFileRef.current.value = '';
+    };
     reader.readAsDataURL(file);
   }
 
@@ -247,19 +315,29 @@ function StoreCustomizerView() {
               {/* Upload Dropzone */}
               <div
                 className={styles.uploadDropzone}
-                style={{ position: 'relative', cursor: 'pointer' }}
+                onClick={() => logoFileRef.current?.click()}
+                style={{ cursor: 'pointer' }}
               >
                 <input
+                  ref={logoFileRef}
                   type="file"
                   accept="image/*,.svg"
-                  onChange={e => handleLogoFileUpload(e.target.files[0])}
-                  className={styles.fileInputOverlay}
+                  onChange={e => handleLogoFileUpload(e.target.files?.[0])}
+                  style={{ display: 'none' }}
                 />
                 <span className={styles.dropzoneIcon}>📁</span>
                 <p><strong>Upload Vector Logo (.SVG, .PNG, .WEBP)</strong></p>
                 <span className={styles.dropzoneSub}>
-                  {logoUrl ? '✅ Logo Loaded (Click to replace)' : 'Drag & drop or browse logo image file'}
+                  {logoUrl ? '✅ Logo Loaded (Click to replace)' : 'Click to browse or drop logo file'}
                 </span>
+                <button
+                  type="button"
+                  className={styles.imgBrowseBtn}
+                  style={{ marginTop: '0.6rem' }}
+                  onClick={e => { e.stopPropagation(); logoFileRef.current?.click(); }}
+                >
+                  Browse Files
+                </button>
               </div>
 
               {/* Live Logo Preview Box */}
@@ -284,21 +362,34 @@ function StoreCustomizerView() {
                 <input type="text" value={faviconEmoji} onChange={e => setFaviconEmoji(e.target.value)} className={styles.adminInput} />
               </div>
 
-              <div className={styles.uploadDropzone} style={{ marginTop: '1rem', position: 'relative', cursor: 'pointer' }}>
+              <div
+                className={styles.uploadDropzone}
+                onClick={() => faviconFileRef.current?.click()}
+                style={{ marginTop: '1rem', cursor: 'pointer' }}
+              >
                 <input
+                  ref={faviconFileRef}
                   type="file"
                   accept="image/x-icon,image/png,image/svg+xml"
-                  onChange={e => handleFaviconUpload(e.target.files[0])}
-                  className={styles.fileInputOverlay}
+                  onChange={e => handleFaviconUpload(e.target.files?.[0])}
+                  style={{ display: 'none' }}
                 />
                 <span className={styles.dropzoneIcon}>🌐</span>
                 <p><strong>Upload .ICO / .PNG Favicon (32x32)</strong></p>
+                <button
+                  type="button"
+                  className={styles.imgBrowseBtn}
+                  style={{ marginTop: '0.6rem' }}
+                  onClick={e => { e.stopPropagation(); faviconFileRef.current?.click(); }}
+                >
+                  Browse Favicon
+                </button>
               </div>
 
               <div className={styles.faviconPreviewRow}>
                 <span className={styles.favTabPreview}>
                   <span className={styles.favIconBox}>{faviconEmoji}</span>
-                  {storeName} — Next-Gen Eyewear Storefront
+                  {storeName} — Fenno Walker Optical Studio
                 </span>
               </div>
             </div>
@@ -348,23 +439,37 @@ function StoreCustomizerView() {
               <div className={styles.formGroup}>
                 <label>Selected Background Asset Image</label>
                 <select value={heroBgPreset} onChange={e => setHeroBgPreset(e.target.value)} className={styles.adminSelect}>
-                  <option value="/premium_glasses_display.png">Preset 1: Premium Optics Display Showcase</option>
-                  <option value="/prada-frames.png">Preset 2: Prada Wire Frame Spotlight</option>
-                  <option value="/persol-sunglasses.png">Preset 3: Persol Calligrapher Edition</option>
+                  <option value="/hero-glasses.png">Preset 1: Hero Eyewear Banner</option>
+                  <option value="/premium_glasses_display.png">Preset 2: Premium Optics Display Showcase</option>
+                  <option value="/prada-frames.png">Preset 3: Prada Wire Frame Spotlight</option>
+                  <option value="/persol-sunglasses.png">Preset 4: Persol Calligrapher Edition</option>
                 </select>
               </div>
 
               {/* Banner Upload */}
-              <div className={styles.uploadDropzone} style={{ marginTop: '0.75rem', marginBottom: '1rem', position: 'relative', cursor: 'pointer' }}>
+              <div
+                className={styles.uploadDropzone}
+                onClick={() => bannerFileRef.current?.click()}
+                style={{ marginTop: '0.75rem', marginBottom: '1rem', cursor: 'pointer' }}
+              >
                 <input
+                  ref={bannerFileRef}
                   type="file"
                   accept="image/*"
-                  onChange={e => handleBannerUpload(e.target.files[0], setHeroBgPreset)}
-                  className={styles.fileInputOverlay}
+                  onChange={e => handleBannerUpload(e.target.files?.[0], setHeroBgPreset)}
+                  style={{ display: 'none' }}
                 />
                 <span className={styles.dropzoneIcon}>🖼️</span>
                 <p><strong>Upload Custom Hero Background Image</strong></p>
                 <span className={styles.dropzoneSub}>Click or drop image to replace main hero banner</span>
+                <button
+                  type="button"
+                  className={styles.imgBrowseBtn}
+                  style={{ marginTop: '0.6rem' }}
+                  onClick={e => { e.stopPropagation(); bannerFileRef.current?.click(); }}
+                >
+                  Browse Image
+                </button>
               </div>
 
               <div className={styles.bannerPreviewBox} style={{ backgroundImage: `url(${heroBgPreset})` }}>

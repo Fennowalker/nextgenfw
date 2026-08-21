@@ -9,8 +9,8 @@ export default function AdminLoginPage() {
   const { login, user, loading } = useAuth();
   const router = useRouter();
 
-  const [email, setEmail] = useState('admin@fennowalker.com');
-  const [password, setPassword] = useState('Admin@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -70,11 +70,11 @@ export default function AdminLoginPage() {
               <input
                 id="adm-email"
                 type="email"
-                autoComplete="username"
+                autoComplete="off"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                placeholder="admin@fennowalker.com"
+                placeholder="Enter admin email"
                 className={styles.input}
               />
             </div>
@@ -88,11 +88,11 @@ export default function AdminLoginPage() {
               <input
                 id="adm-pw"
                 type={showPw ? 'text' : 'password'}
-                autoComplete="current-password"
+                autoComplete="new-password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
+                placeholder="Enter admin password"
                 className={styles.input}
               />
               <button

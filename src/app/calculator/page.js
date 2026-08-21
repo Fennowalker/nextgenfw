@@ -45,7 +45,7 @@ export default function CalculatorPage() {
         <div className="container">
           <div className={styles.headerInner}>
             <Link href="/" className={styles.logo}>
-              <span>👓</span> Next-Gen<strong>Eyewear</strong>
+              <img src="/fenno-walker-logo.svg" alt="FENNO WALKER" height="28" style={{ maxWidth: '170px', objectFit: 'contain' }} />
             </Link>
             <div className={styles.navRight}>
               <Link href="/account" className={styles.navLink}>📜 My Rx Vault</Link>

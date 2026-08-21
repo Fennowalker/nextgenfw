@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Admin Command Center | Next-Gen Eyewear',
-  description: 'Admin dashboard for managing the Next-Gen Eyewear platform.',
+  title: 'Admin Command Center | Fenno Walker',
+  description: 'Admin dashboard for managing the Fenno Walker optical store.',
 };
 
 export default function AdminLayout({ children }) {

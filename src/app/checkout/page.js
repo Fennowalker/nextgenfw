@@ -332,7 +332,7 @@ function StepPayment({ onNext, onBack }) {
           <div className={styles.bankDetails}>
             <h4>Bank Transfer Details</h4>
             <div className={styles.bankRow}><span>Bank</span><strong>HBL Pakistan</strong></div>
-            <div className={styles.bankRow}><span>Account Title</span><strong>Next-Gen Eyewear Pvt Ltd</strong></div>
+            <div className={styles.bankRow}><span>Account Title</span><strong>Fenno Walker Optical Studio</strong></div>
             <div className={styles.bankRow}><span>Account No.</span><strong>0123-4567890-01</strong></div>
             <div className={styles.bankRow}><span>IBAN</span><strong>PK36HABB0000123456780101</strong></div>
             <p className={styles.bankNote}>⚠️ Please use your Order ID as the payment reference. Your order will be processed within 1–2 business days after payment confirmation.</p>
@@ -393,10 +393,9 @@ function StepConfirmation({ cart, form, shipping }) {
         {/* Invoice Header */}
         <div className={styles.invoiceHeader}>
           <div className={styles.invoiceBrand}>
-            <span className={styles.invoiceLogo}>👓</span>
+            <img src="/fenno-walker-logo.svg" alt="Fenno Walker" height="28" style={{ maxWidth: '160px', objectFit: 'contain' }} />
             <div>
-              <strong>Next-Gen Eyewear</strong>
-              <p>enterprise-grade optical retail</p>
+              <p>Optical Studio · Noida, Delhi NCR</p>
             </div>
           </div>
           <div className={styles.invoiceMeta}>
@@ -465,7 +464,7 @@ function StepConfirmation({ cart, form, shipping }) {
           </tfoot>
         </table>
 
-        <p className={styles.invoiceFooter}>Thank you for choosing Next-Gen Eyewear. For queries, contact support@nextgeneyewear.pk · www.nextgeneyewear.pk</p>
+        <p className={styles.invoiceFooter}>Thank you for choosing Fenno Walker Optical Studio. For queries, contact fennowalker@gmail.com · fennowalker.com</p>
       </div>
 
       {/* Actions */}
@@ -537,8 +536,7 @@ export default function CheckoutPage() {
       <header className={`${styles.header} glass-panel`}>
         <div className={`container ${styles.headerInner}`}>
           <Link href="/" className={styles.logo}>
-            <span>👓</span>
-            <span>Next-Gen<strong>Eyewear</strong></span>
+            <img src="/fenno-walker-logo.svg" alt="Fenno Walker" height="28" style={{ maxWidth: '160px', objectFit: 'contain' }} />
           </Link>
           <StepBar current={step} />
           <div className={styles.secureTag}>🔒 Secure Checkout</div>
