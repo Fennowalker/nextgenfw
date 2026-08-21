@@ -204,29 +204,33 @@ export default function Home() {
       {/* ── HEADER ── */}
       <header className={`${styles.header} glass-panel`}>
         <div className={`container ${styles.headerContent}`}>
-          <div className={styles.logo}>
+          {/* Logo */}
+          <Link href="/" className={styles.logo}>
             <img
               src="/fenno-walker-logo.png"
               onError={e => { e.target.onerror = null; e.target.src = '/fenno-walker-logo.svg'; }}
-              alt="Fenno Walker Optical Studio"
-              height="42"
+              alt="Fenno Walker Studio"
+              height="36"
               className={styles.logoImg}
             />
-          </div>
+          </Link>
+
+          {/* Minimalist Nav */}
           <nav className={styles.nav}>
-            {['Eyeglasses','Sunglasses','Contact Lenses'].map(item => (
-              <a key={item} href="#catalog">{item}</a>
-            ))}
-            <Link href="/calculator">🔬 Rx Calculator</Link>
-            <Link href="/track">🚚 Track Order</Link>
-            <a href="#catalog" className={styles.saleLink}>🔥 Sale</a>
+            <a href="#catalog">Eyeglasses</a>
+            <a href="#catalog">Sunglasses</a>
+            <a href="#catalog">Contact Lenses</a>
+            <Link href="/calculator">Rx Calculator</Link>
+            <Link href="/track">Track Order</Link>
           </nav>
+
+          {/* Action Icons & Cart */}
           <div className={styles.actions}>
             <div className={styles.searchBar}>
               <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
-                placeholder="Search products, brands..."
+                placeholder="Search catalog..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className={styles.searchInput}
@@ -239,7 +243,6 @@ export default function Home() {
             {user && (
               <div className={styles.userChip}>
                 <span className={styles.userAvatar}>{user.name?.[0]?.toUpperCase() || '?'}</span>
-                <span className={styles.userName}>{user.name.split(' ')[0]}</span>
                 <button
                   className={styles.logoutBtn}
                   onClick={() => { logout(); router.refresh(); }}
@@ -247,7 +250,6 @@ export default function Home() {
                 >↩</button>
               </div>
             )}
-            <button className={styles.iconBtn} title="Wishlist">♡</button>
             <button
               className={`${styles.cartBtn} btn-primary`}
               onClick={() => setCartOpen(true)}
