@@ -1,13 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200">
-  <rect width="400" height="200" fill="#ffffff"/>
-  <g transform="translate(100, 20)">
-    <!-- FW Monogram -->
-    <!-- F shape -->
-    <path d="M 20,20 H 90 M 20,20 V 90 M 20,55 H 75 M 20,70 V 90" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <!-- W shape -->
-    <path d="M 110,20 V 90 L 145,50 L 180,90 V 20" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <path d="M 110,90 L 145,55 L 180,90" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60" width="320" height="60">
+  <!-- Eyewear Glasses Icon -->
+  <g transform="translate(10, 10)">
+    <path d="M 5,20 C 5,10 18,10 22,20 C 26,10 39,10 39,20 C 39,30 26,30 22,20 C 18,30 5,30 5,20 Z" stroke="#1a1a2e" stroke-width="3" fill="none" />
+    <circle cx="13.5" cy="20" r="7" fill="#6366f1" opacity="0.15"/>
+    <circle cx="30.5" cy="20" r="7" fill="#6366f1" opacity="0.15"/>
   </g>
-  <!-- Text -->
-  <text x="200" y="160" font-family="'Outfit', 'Inter', 'Helvetica', 'Arial', sans-serif" font-size="28" font-weight="600" letter-spacing="8" fill="#000000" text-anchor="middle">FENNO WALKER</text>
+  <!-- FENNO WALKER Brand Typography -->
+  <text x="60" y="32" font-family="'Outfit', 'Inter', sans-serif" font-size="22" font-weight="900" letter-spacing="4" fill="#1a1a2e">FENNO</text>
+  <text x="175" y="32" font-family="'Outfit', 'Inter', sans-serif" font-size="22" font-weight="400" letter-spacing="4" fill="#6366f1">WALKER</text>
+  <text x="60" y="48" font-family="'Inter', sans-serif" font-size="8" font-weight="700" letter-spacing="3" fill="#888888">PREMIUM OPTICAL STUDIO</text>
 </svg>

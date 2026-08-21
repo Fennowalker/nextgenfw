@@ -205,7 +205,13 @@ export default function Home() {
       <header className={`${styles.header} glass-panel`}>
         <div className={`container ${styles.headerContent}`}>
           <div className={styles.logo}>
-            <img src="/fenno-walker-logo.svg" alt="Fenno Walker" height="38" className={styles.logoImg} />
+            <img
+              src="/fenno-walker-logo.png"
+              onError={e => { e.target.onerror = null; e.target.src = '/fenno-walker-logo.svg'; }}
+              alt="Fenno Walker Optical Studio"
+              height="42"
+              className={styles.logoImg}
+            />
           </div>
           <nav className={styles.nav}>
             {['Eyeglasses','Sunglasses','Contact Lenses'].map(item => (
