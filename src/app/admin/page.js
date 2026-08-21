@@ -761,16 +761,19 @@ function ProductConfiguratorModal({ product, onClose, onSave }) {
   const [basePrice, setBasePrice] = useState(product?.basePrice || 250);
   const [status, setStatus] = useState(product?.status || 'active');
 
-  /* Image upload state */
+  const fileInputRef = useRef(null);
   const [productImage, setProductImage] = useState(product?.img || null);
   const [imgFileName, setImgFileName] = useState('');
   const [imgDragOver, setImgDragOver] = useState(false);
 
-  function handleImageFile(file) {
+  function handleImageFile(file, inputEl) {
     if (!file || !file.type.startsWith('image/')) return;
     setImgFileName(file.name);
     const reader = new FileReader();
-    reader.onload = (ev) => setProductImage(ev.target.result);
+    reader.onload = (ev) => {
+      setProductImage(ev.target.result);
+      if (inputEl) inputEl.value = '';
+    };
     reader.readAsDataURL(file);
   }
 
@@ -847,44 +850,54 @@ function ProductConfiguratorModal({ product, onClose, onSave }) {
             {/* ── IMAGE UPLOAD ── */}
             <div className={styles.imgUploadSection}>
               <label className={styles.imgUploadLabel}>Product Image</label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={e => handleImageFile(e.target.files[0], e.target)}
+              />
               <div
                 className={`${styles.imgDropZone} ${imgDragOver ? styles.imgDropZoneActive : ''} ${productImage ? styles.imgDropZoneHasFile : ''}`}
                 style={{ position: 'relative', cursor: 'pointer' }}
+                onClick={() => fileInputRef.current?.click()}
                 onDragOver={e => { e.preventDefault(); setImgDragOver(true); }}
                 onDragLeave={() => setImgDragOver(false)}
                 onDrop={e => { e.preventDefault(); setImgDragOver(false); handleImageFile(e.dataTransfer.files[0]); }}
               >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={e => handleImageFile(e.target.files[0])}
-                  className={styles.fileInputOverlay}
-                />
                 {productImage ? (
-                  <div className={styles.imgPreviewWrap} style={{ zIndex: 2, pointerEvents: 'none' }}>
+                  <div className={styles.imgPreviewWrap}>
                     <img src={productImage} alt="Preview" className={styles.imgPreviewThumb} />
                     <div className={styles.imgPreviewInfo}>
-                      <span className={styles.imgPreviewName}>✅ {imgFileName || 'Current image'}</span>
-                      <span className={styles.imgPreviewSize}>Click anywhere to replace</span>
+                      <span className={styles.imgPreviewName}>✅ {imgFileName || 'Current image uploaded'}</span>
+                      <span className={styles.imgPreviewSize}>Click anywhere to replace image</span>
                     </div>
                     <button
                       type="button"
                       className={styles.imgRemoveBtn}
-                      style={{ pointerEvents: 'auto' }}
-                      onClick={e => { e.stopPropagation(); setProductImage(null); setImgFileName(''); }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        setProductImage(null);
+                        setImgFileName('');
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
                       title="Remove image"
                     >✕</button>
                   </div>
                 ) : (
-                  <div className={styles.imgDropContent} style={{ pointerEvents: 'none' }}>
+                  <div className={styles.imgDropContent}>
                     <span className={styles.imgDropIcon}>🖼️</span>
                     <p className={styles.imgDropTitle}>Drag &amp; drop product image here</p>
                     <p className={styles.imgDropSub}>Supports PNG, JPG, WebP, SVG up to 10MB</p>
                   </div>
                 )}
-                <label className={styles.imgBrowseBtn} style={{ pointerEvents: 'none', zIndex: 2 }}>
+                <button
+                  type="button"
+                  className={styles.imgBrowseBtn}
+                  onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                >
                   📁 {productImage ? 'Replace Image' : 'Browse Files'}
-                </label>
+                </button>
               </div>
             </div>
 
