@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Compatible with PostgreSQL, Neon, Supabase, Railway, Vercel Postgres
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  phone         String?
+  role          String         @default("user") // "user" | "admin"
+  vipStatus     String         @default("Gold Vision VIP")
+  points        Int            @default(1250)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  prescriptions Prescription[]
+  orders        Order[]
+  subscriptions Subscription[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  brand       String
+  type        String   // "Frame" | "Sunglass" | "Contact Lens"
+  basePrice   Float
+  status      String   @default("active") // "active" | "draft"
+  stock       Int      @default(50)
+  variants    Int      @default(4)
+  img         String?  @db.Text
+  category    String?
+  gender      String?
+  material    String?
+  rating      Float    @default(4.8)
+  reviewsCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reviews     Review[]
+}
+
+model Prescription {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  doctor    String
+  date      String
+  isPrimary Boolean  @default(false)
+  odSph     String
+  odCyl     String
+  odAxis    String
+  odAdd     String?
+  osSph     String
+  osCyl     String
+  osAxis    String
+  osAdd     String?
+  pd        String   @default("63mm")
+  notes     String?
+  fileUrl   String?  @db.Text
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  total     Float
+  status    String      @default("Processing") // "Verified" | "Glazing" | "QC Passed" | "In Transit" | "Delivered"
+  tracking  String
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  name      String
+  color     String?
+  size      String?
+  price     Float
+  qty       Int     @default(1)
+  img       String?
+}
+
+model Subscription {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product      String
+  frequency    String   @default("Every 3 Months")
+  nextShipDate String
+  status       String   @default("Active") // "Active" | "Paused"
+  price        Float
+  img          String?
+  createdAt    DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  author    String
+  rating    Int
+  title     String?
+  text      String   @db.Text
+  status    String   @default("approved") // "pending" | "approved" | "rejected"
+  createdAt DateTime @default(now())
+}
