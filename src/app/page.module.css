@@ -42,7 +42,7 @@
   flex-shrink: 0;
   text-decoration: none;
 }
-.logoImg { display: block; height: 32px; width: auto; object-fit: contain; }
+.logoImg { display: block; height: 28px; width: 170px; max-width: 170px; object-fit: contain; }
 .logoText {
   font-family: var(--font-heading);
   font-size: 1.1rem;

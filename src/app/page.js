@@ -294,8 +294,8 @@ export default function Home() {
             <img
               src={customTheme?.logoUrl || "/fenno-walker-logo.svg"}
               alt="Fenno Walker"
-              height={customTheme?.logoHeight || "32"}
-              style={{ maxWidth: '250px', objectFit: 'contain' }}
+              height="28"
+              style={{ width: '170px', maxWidth: '170px', objectFit: 'contain' }}
               className={styles.logoImg}
             />
           </Link>

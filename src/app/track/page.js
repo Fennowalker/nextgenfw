@@ -85,7 +85,7 @@ export default function TrackPage({ searchParams }) {
         <div className="container">
           <div className={styles.headerInner}>
             <Link href="/" className={styles.logo}>
-              <img src="/fenno-walker-logo.svg" alt="FENNO WALKER" height="28" style={{ maxWidth: '170px', objectFit: 'contain' }} />
+              <img src="/fenno-walker-logo.svg" alt="FENNO WALKER" height="28" style={{ width: '170px', maxWidth: '170px', objectFit: 'contain' }} />
             </Link>
             <div className={styles.navRight}>
               <Link href="/account" className={styles.navLink}>📜 My Rx Vault</Link>

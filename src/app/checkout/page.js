@@ -536,7 +536,7 @@ export default function CheckoutPage() {
       <header className={`${styles.header} glass-panel`}>
         <div className={`container ${styles.headerInner}`}>
           <Link href="/" className={styles.logo}>
-            <img src="/fenno-walker-logo.svg" alt="Fenno Walker" height="28" style={{ maxWidth: '160px', objectFit: 'contain' }} />
+            <img src="/fenno-walker-logo.svg" alt="Fenno Walker" height="28" style={{ width: '170px', maxWidth: '170px', objectFit: 'contain' }} />
           </Link>
           <StepBar current={step} />
           <div className={styles.secureTag}>🔒 Secure Checkout</div>
